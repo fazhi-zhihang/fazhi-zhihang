@@ -1,0 +1,99 @@
+@import "tailwindcss";
+
+@theme {
+  --color-void: #e7f3fb;
+  --color-panel: #f8fbfe;
+  --color-panel-2: #e8f2fa;
+  --color-fg: #16324a;
+  --color-muted: #5c7388;
+  --color-line: #c5d7e8;
+  --color-seal: #1d5fbf;
+  --color-seal-soft: #e7f0ff;
+  --color-brass: #8d6424;
+  --color-onseal: #f5f9ff;
+  --color-desk: #cfe6f6;
+  --font-sans: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+  --font-serif: "Noto Serif SC", "Songti SC", serif;
+  --font-mono: "Times New Roman", Times, "Liberation Serif", "Nimbus Roman", "Noto Sans SC", sans-serif;
+}
+
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  body {
+    font-family: var(--font-sans);
+    background: var(--color-desk);
+    color: var(--color-fg);
+  }
+  [lang="en"] {
+    font-family: "Times New Roman", Times, "Liberation Serif", "Nimbus Roman", serif;
+  }
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+  }
+  p {
+    text-wrap: pretty;
+  }
+}
+
+@layer components {
+  .hud {
+    position: relative;
+    border: 1px solid var(--color-line);
+    background: var(--color-panel);
+  }
+  .hud::before,
+  .hud::after {
+    content: "";
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    pointer-events: none;
+  }
+  .hud::before {
+    top: 5px;
+    left: 5px;
+    border-top: 1px solid var(--color-brass);
+    border-left: 1px solid var(--color-brass);
+  }
+  .hud::after {
+    right: 5px;
+    bottom: 5px;
+    border-right: 1px solid var(--color-brass);
+    border-bottom: 1px solid var(--color-brass);
+  }
+  .desk-grid {
+    background-image:
+      linear-gradient(to right, color-mix(in srgb, var(--color-line) 70%, transparent) 1px, transparent 1px),
+      linear-gradient(to bottom, color-mix(in srgb, var(--color-line) 70%, transparent) 1px, transparent 1px);
+    background-size: 24px 24px;
+    mask-image: linear-gradient(to bottom, #000 0%, transparent 88%);
+  }
+  .track-law {
+    box-shadow: inset 3px 0 0 var(--color-seal);
+  }
+  .track-cs {
+    box-shadow: inset 3px 0 0 var(--color-fg);
+  }
+  .track-biz {
+    box-shadow: inset 3px 0 0 var(--color-brass);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
