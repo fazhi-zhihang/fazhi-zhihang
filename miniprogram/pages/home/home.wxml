@@ -1,0 +1,36 @@
+<view wx:if="{{!entered}}" class="cover" bindtap="enter">
+  <image class="cover-img" src="/assets/cover.jpg" mode="aspectFill" />
+  <view class="enter">轻触进入</view>
+</view>
+<block wx:else>
+  <view class="pad">
+    <image class="hero" src="/assets/sky.jpg" mode="aspectFill" />
+    <view class="muted">法学、计算机、商务英语共用一场结构化面试。点封面进入后，右上角或密钥页填写 DeepSeek。</view>
+    <view class="row">
+      <navigator url="/pages/interview/interview" open-type="redirect" class="card law grow">
+        <image src="/assets/opt-law.jpg" style="width:88rpx;height:88rpx;border-radius:12rpx;" mode="aspectFill" />
+        <view class="grow">
+          <view>法学</view>
+          <view class="en">Law</view>
+        </view>
+      </navigator>
+      <navigator url="/pages/interview/interview" open-type="redirect" class="card grow">
+        <image src="/assets/opt-cs.jpg" style="width:88rpx;height:88rpx;border-radius:12rpx;" mode="aspectFill" />
+        <view class="grow">
+          <view>计算机</view>
+          <view class="en">Computer Science</view>
+        </view>
+      </navigator>
+      <navigator url="/pages/interview/interview" open-type="redirect" class="card biz grow">
+        <image src="/assets/opt-biz.jpg" style="width:88rpx;height:88rpx;border-radius:12rpx;" mode="aspectFill" />
+        <view class="grow">
+          <view>商英</view>
+          <view class="en">Business English</view>
+        </view>
+      </navigator>
+    </view>
+    <navigator url="/pages/settings/settings" class="card">密钥：{{hasKey ? '已填写' : '未填写'}} · 模型 {{model}}</navigator>
+    <navigator url="/pages/interview/interview" open-type="redirect" class="btn" style="display:block;text-align:center;padding:22rpx;">进入模拟面试</navigator>
+  </view>
+  <nav current="home" />
+</block>

@@ -1,0 +1,54 @@
+<view class="pad" wx:if="{{law}}">
+  <view class="en" bindtap="closeLaw">返回法律库</view>
+  <view class="en">{{law.en}}</view>
+  <view class="h1">{{law.title}}</view>
+  <view class="muted">{{law.place}}</view>
+  <view class="card">{{law.text}}</view>
+  <view class="muted">{{law.use}}</view>
+  <view class="muted">条文已存在本机，打开不再重新检索。</view>
+</view>
+<view class="pad" wx:elif="{{library}}">
+  <view class="en" bindtap="hideLibrary">返回</view>
+  <view class="en">Foreign statute library</view>
+  <view class="h1">域外法律库</view>
+  <view class="muted">点一条才读已存入的条文。</view>
+  <input placeholder="搜竞业、加班、GDPR" value="{{query}}" bindinput="onQuery" />
+  <view class="card" wx:for="{{laws}}" wx:key="id" wx:if="{{!query || item.title.indexOf(query) >= 0 || item.en.indexOf(query) >= 0}}" data-id="{{item.id}}" bindtap="openLaw">
+    <view>{{item.title}}</view>
+    <view class="en">{{item.en}}</view>
+    <view class="muted">{{item.place}}</view>
+  </view>
+</view>
+<view class="pad" wx:elif="{{current}}">
+  <view class="en" bindtap="close">返回</view>
+  <view class="en">{{current.en}}</view>
+  <view class="h1">{{current.title}}</view>
+  <view class="card">
+    <view class="en">中国法里先看什么</view>
+    <view class="muted">{{current.cn}}</view>
+  </view>
+  <view class="card">
+    <view class="en">域外不要直译</view>
+    <view class="muted">{{current.foreign}}</view>
+  </view>
+  <view class="card">
+    <view class="en">你可以先问这一句</view>
+    <view>{{current.ask}}</view>
+  </view>
+  <view class="muted">对照用来面试和读合同，不代替当地律师意见。</view>
+</view>
+<view class="pad" wx:else>
+  <view class="en">Comparative employment</view>
+  <view class="h1">域外对照</view>
+  <view class="muted">和社群分开。对照用来读境外合同。条文在法律库里。</view>
+  <view class="card" bindtap="showLibrary">
+    <view>域外法律库</view>
+    <view class="en">Stored foreign statutes</view>
+    <view class="muted">7 篇已入库</view>
+  </view>
+  <view class="card" wx:for="{{pairs}}" wx:key="id" data-id="{{item.id}}" bindtap="open">
+    <view>{{item.title}}</view>
+    <view class="en">{{item.en}}</view>
+  </view>
+</view>
+<nav current="abroad" />

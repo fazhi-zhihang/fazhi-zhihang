@@ -1,0 +1,17 @@
+{
+  "description": "法智职航微信小程序",
+  "packOptions": { "ignore": [], "include": [] },
+  "setting": {
+    "bundle": false,
+    "urlCheck": false,
+    "es6": true,
+    "enhance": true,
+    "postcss": true,
+    "minified": false,
+    "babelSetting": { "ignore": [], "disablePlugins": [], "outputPath": "" }
+  },
+  "compileType": "miniprogram",
+  "appid": "touristappid",
+  "projectname": "fazhi-zhihang",
+  "condition": {}
+}

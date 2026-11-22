@@ -1,0 +1,16 @@
+<view class="pad">
+  <view class="en">BASE / EDITABLE</view>
+  <input placeholder="姓名" value="{{profile.name}}" data-k="name" bindinput="onField" />
+  <input placeholder="学校" value="{{profile.school}}" data-k="school" bindinput="onField" />
+  <input placeholder="专业" value="{{profile.major}}" data-k="major" bindinput="onField" />
+  <input placeholder="目标岗位" value="{{profile.target}}" data-k="target" bindinput="onField" />
+  <button class="btn" bindtap="saveProfile">保存基础信息</button>
+  <view class="en" style="margin-top:28rpx;">SYSTEM / LOCKED</view>
+  <view class="muted" wx:if="{{!sessions.length}}">还没有系统记录。面试写入后不能在这里改。</view>
+  <view class="card" wx:for="{{sessions}}" wx:key="at">
+    <view>{{item.title}}</view>
+    <view class="muted">{{item.summary}}</view>
+    <view class="en">不可修改</view>
+  </view>
+</view>
+<nav current="archive" />

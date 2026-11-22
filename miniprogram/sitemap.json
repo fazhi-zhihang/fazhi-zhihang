@@ -1,0 +1,4 @@
+{
+  "desc": "法智职航",
+  "rules": [{ "action": "allow", "page": "*" }]
+}
