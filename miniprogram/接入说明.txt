@@ -1,0 +1,15 @@
+法智职航 · 导入微信开发者工具
+
+1. 用浏览器打开 https://mp.weixin.qq.com/ 注册小程序（个人主体可以用测试号先开发）。
+2. 安装稳定版微信开发者工具：https://developers.weixin.qq.com/miniprogram/dev/devtools/download.html
+3. 工具里选择「导入项目」，目录选本压缩包解压后的 miniprogram 文件夹（里面要直接看到 app.json，而不是再套一层）。
+4. AppID 先填测试号或 touristappid。有正式 AppID 后在项目设置里替换 project.config.json 的 appid。
+5. 详情 → 本地设置 → 勾选「不校验合法域名、web-view、TLS 版本以及 HTTPS 证书」，否则开发阶段请求 DeepSeek 会被拦住。
+6. 打开小程序首页进入「密钥」，填写在 https://platform.deepseek.com/ 申请的 API Key。模型用 deepseek-flash 或 deepseek-v4-pro。
+7. 真机预览前，到微信公众平台 → 开发管理 → 开发设置 → 服务器域名，把 request 合法域名加上：api.deepseek.com
+   域名必须 https，且按微信规则备案。个人主体若不能配这个域名，就只能在开发者工具里不校验域名进行演示。
+8. 不要把 API Key 写进代码再上传。密钥应留在用户自己的手机存储里。
+
+热搜会请求微博榜（dabenshi.cn）和百度实时榜（top.baidu.com）。真机若域名未配置，热搜可能为空，程序不会编造标题；社区里被赞过的帖会标明「社区高赞」。专栏和视频默认待审。在密钥页设置至少 6 位开发者口令后，社群里才会出现「审核」。口令只存在这台设备。广场帖子、专栏和视频都只存在本机，同学之间互不可见。小程序不能解析 PDF 正文，上传文档后请自己把判断写进专栏。
+
+本包是可导入的小程序工程。页面覆盖：岗位选择与自选、DeepSeek 追问、敷衍回答时的面试官反应、法律库与提问、档案基础信息、锁定的面试记录、广场搜索与排序、热搜、专栏与视频审核。

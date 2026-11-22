@@ -1,0 +1,17 @@
+<view class="pad">
+  <view class="en">DEEPSEEK</view>
+  <view class="h1">填入你自己的密钥</view>
+  <view class="muted">密钥只存在手机本地存储。点发送时才请求 https://api.deepseek.com 。官方模型 ID 是 deepseek-flash 与 deepseek-v4-pro，没有 deepseek2.1 这个名字。</view>
+  <input password value="{{apiKey}}" bindinput="onKey" placeholder="sk-…" />
+  <picker mode="selector" range="{{models}}" value="{{modelIndex}}" bindchange="onModel">
+    <view class="card">当前模型 {{models[modelIndex]}}</view>
+  </picker>
+  <button class="btn" bindtap="save">保存密钥</button>
+  <view class="en">DEVELOPER</view>
+  <view class="h1">开发者审核</view>
+  <view class="muted">口令只留在这台设备。你自己或你告诉口令的人，可以审核专栏、视频，并隐藏广场帖。口令不要写进代码。</view>
+  <input password value="{{phrase}}" bindinput="onPhrase" placeholder="{{hasHash ? '输入已设置的口令' : '设置至少 6 位口令'}}" />
+  <button class="btn" bindtap="unlock">{{hasHash ? '解锁' : '设置口令'}}</button>
+  <button class="btn ghost" bindtap="lock">退出审核</button>
+  <view class="muted">{{note}}</view>
+</view>
