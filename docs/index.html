@@ -2,19 +2,74 @@
 <html lang="zh-CN">
 <head>
 <meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
 <title>法智职航</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;600;700&family=Noto+Serif+SC:wght@600&display=swap" rel="stylesheet"/>
+<style>
+:root{--fg:#16324a;--muted:#5c7388;--line:#c5d7e8;--seal:#1d5fbf}
+*{box-sizing:border-box}body{margin:0;font-family:"Noto Sans SC",sans-serif;color:var(--fg);background:linear-gradient(180deg,#d7ecf8,#e7f3fb 42%,#f7fbfe)}
+.en{font-family:"Times New Roman",Times,serif}.app{max-width:430px;margin:0 auto;min-height:100dvh;display:flex;flex-direction:column;background:rgba(248,251,254,.78)}
+header{height:48px;display:flex;align-items:center;padding:0 14px;border-bottom:1px solid var(--line);background:rgba(248,251,254,.9);font-family:"Noto Serif SC",serif}
+main{flex:1;overflow:auto;padding:16px 16px 92px}nav{position:sticky;bottom:0;display:flex;overflow:auto;border-top:1px solid var(--line);background:rgba(248,251,254,.95)}
+nav button{flex:0 0 72px;border:0;background:transparent;color:var(--muted);padding:10px 0 14px}nav button.on{color:var(--seal);font-weight:700}
+.card{border:1px solid var(--line);background:rgba(248,251,254,.94);border-radius:14px;padding:12px;margin-top:12px}h1{font-family:"Noto Serif SC",serif;font-size:22px;margin:8px 0}.muted{color:var(--muted);font-size:13px;line-height:1.6}
+.btn{display:block;width:100%;margin-top:12px;background:var(--seal);color:#f5f9ff;border:0;border-radius:12px;padding:10px}.ghost{background:#fff;color:var(--fg);border:1px solid var(--line)}
+.cover{position:fixed;inset:0;border:0;background:linear-gradient(165deg,#9fd0ea,#e7f3fb 55%,#f8fbfe);color:var(--fg)}
+.cover b{position:absolute;left:0;right:0;top:38%;font-family:"Noto Serif SC",serif;font-size:40px}.enter{position:absolute;left:0;right:0;bottom:72px;margin:auto;width:140px;background:rgba(248,251,254,.92);border-radius:999px;padding:10px 0}
+.row{display:flex;gap:8px;overflow:auto}.chip{border:1px solid var(--line);background:#fff;border-radius:999px;padding:6px 10px;white-space:nowrap}.chip.on{border-color:var(--seal);color:var(--seal)}
+textarea,input{width:100%;border:1px solid var(--line);border-radius:10px;padding:8px;background:#fff;font:inherit}.bubble{margin:8px 0;padding:8px 10px;border-radius:12px;background:#fff;border:1px solid var(--line);white-space:pre-wrap}.me{background:#e7f0ff}
+</style>
 </head>
-<body>
-<p id="boot" style="font-family:sans-serif;padding:24px">正在打开法智职航…</p>
+<body><div id="app"></div>
 <script>
-Promise.all([1,2,3].map(function(i){return fetch("part"+i+".txt").then(function(r){if(!r.ok) throw new Error(i); return r.text();});})).then(function(parts){
-  document.open();
-  document.write(parts.join(""));
-  document.close();
-}).catch(function(){
-  document.getElementById("boot").textContent="页面文件还没齐，请稍后再打开。";
-});
+const ROLES=[["counsel","law","企业法务","Corporate Counsel","请用两分钟讲一次你拆过的合同争议。说清争议点、依据，以及你建议当事人具体怎么做。"],["ip","law","知识产权专员","IP Specialist","一个还没注册的名称要印上包装。上线前你要求先做哪三件核查？"],["compliance","law","合规与风控","Compliance and Risk","业务想先上线再补评估。你会拦住哪一步，依据是什么？"],["clerk","law","律师助理","Legal Assistant","一份仲裁申请，你先核哪四项材料才交给主办律师？"],["backend","cs","后端工程","Backend Engineer","用户连点支付按钮。前端已经禁用按钮。服务端还要做什么，才不会扣两次款？"],["frontend","cs","前端工程","Frontend Engineer","一个表单偶发重复提交。你怎么从界面和请求两头收口？"],["security","cs","网络安全","Cybersecurity","简历系统里的手机号要给运营导出。你允许之前先确认哪三件事？"],["cross","biz","跨境商务","Cross-border Business","对方合同写着 at will。对内地候选人，这句话不能怎么翻译、不能怎么用？"],["biz","biz","商务英语","Business English","客户把竞业写成 never work again。你怎么改成有边界的英文？"]];
+const TRACKS=[["law","法学","Law"],["cs","计算机","Computer Science"],["biz","商英","Business English"]];
+const HOT=[["试用期写成四个月","一年以上不满三年的合同，试用期不得超过两个月。"],["空白页先签字","劳动报酬、岗位空着时不要预签。"],["付费保 offer","不向个人账户转账，核验公司全称。"]];
+const LAWS=[["劳动合同法 第10条","建立劳动关系，应当订立书面劳动合同。已用工未签的，自用工之日起一个月内应当订立。"],["劳动合同法 第19条","劳动合同期限一年以上不满三年的，试用期不得超过二个月。"],["劳动合同法 第37条","劳动者提前三十日以书面形式通知用人单位，可以解除劳动合同。试用期内提前三日通知。"],["劳动合同法 第82条","超过一个月不满一年未签书面劳动合同的，应当每月支付二倍工资。"]];
+const ABROAD=[["California BPC 16600","加州原则上禁止限制离职后从业的竞业条款。"],["FLSA 29 USC 207","美国联邦加班：非豁免雇员每周超过40小时，通常按1.5倍支付。"],["UK ERA s.94","英国雇员在符合条件时，对不公平解雇有法定申诉权。"]];
+const KEY="fazhi-pages-v1";
+const S=Object.assign({tab:"home",entered:false,track:"law",role:"counsel",phase:"pick",stage:0,miss:0,strikes:0,msgs:[],profile:{name:"",school:"",target:""},posts:[],lastReport:""},JSON.parse(localStorage.getItem(KEY)||"{}"));
+function save(){localStorage.setItem(KEY,JSON.stringify(S));}
+function thin(t){return t.trim().length<8;}
+function line(){const role=ROLES.find(r=>r[0]===S.role),title=role[2];
+if(S.stage<=0)return "你好，我是今天的面试官。这场按校招常见的结构化顺序走：自我介绍、求职动机、一道专业题、一个过往事例，最后留给你反问。\n\n先请用大约一分钟介绍你自己，不要把简历从头念到尾。";
+if(S.stage===1)return "自我介绍收到。下一问只谈动机：你为什么投「"+title+"」，而不是一个相邻岗位？请说出你为它做过的一件准备。";
+if(S.stage===2)return "动机先到这里。专业题只有一道，请直接作答："+role[4];
+if(S.stage===3)return "专业题收到。请讲一件你真正做过的事。四句即可：当时的情况、你负责什么、你做了哪一步、结果如何。";
+if(S.stage===4)return "事例先收到。请向我提一个和这个岗位日常工作有关的问题。薪资留到后面。";
+return "今天的面试到此结束。五个环节已经走完，我不再追加问题。";}
+function nameOf(){return (S.profile.name||"").trim()||"momo";}
+function shell(title,body){
+if(!S.entered)return '<button class="cover" id="enter"><b>法智职航</b><span class="enter">轻触进入</span></button>';
+const tabs=[["home","首页"],["interview","面试"],["legal","法律"],["archive","档案"],["community","社群"],["abroad","域外"]];
+return '<div class="app"><header>'+title+'</header><main>'+body+'</main><nav>'+tabs.map(t=>'<button data-tab="'+t[0]+'" class="'+(S.tab===t[0]?"on":"")+'">'+t[1]+'</button>').join("")+'</nav></div>';}
+function home(){const chips=TRACKS.map(t=>'<button class="chip '+(S.track===t[0]?"on":"")+'" data-track="'+t[0]+'">'+t[1]+' <span class="en">'+t[2]+'</span></button>').join("");
+const roles=ROLES.filter(r=>r[1]===S.track).map(r=>'<div class="card"><b>'+r[2]+'</b><div class="en muted">'+r[3]+'</div><p class="muted">'+r[4]+'</p><button class="btn" data-role="'+r[0]+'">进入面试</button></div>').join("");
+return shell("法智职航",'<h1>法智职航</h1><p class="muted">就业面试与法律素养。这一页由 GitHub Pages 打开，不经过 Grok。</p><div class="row">'+chips+'</div>'+roles);}
+function interview(){const role=ROLES.find(r=>r[0]===S.role);
+if(S.phase!=="chat")return shell("模拟面试",'<h1>模拟面试</h1><p class="en muted">'+role[3]+'</p><p class="muted">当前岗位：'+role[2]+'。自我介绍是第一段。</p><button class="btn" id="begin">开始</button><div class="card"><b>视频面试</b><p class="muted">开发中，敬请期待</p></div>');
+const bubbles=S.msgs.map(m=>'<div class="bubble '+(m[0]==="user"?"me":"")+'">'+m[1]+'</div>').join("");
+const done=S.stage>=5;
+return shell("模拟面试",'<h1>模拟面试</h1>'+bubbles+(done?'<button class="btn" id="lock">结束并写入档案</button>':'<textarea id="draft" rows="3" placeholder="回答"></textarea><button class="btn" id="send">发送</button>'));}
+function legal(){return shell("法律素养",'<h1>法律素养</h1>'+LAWS.map(a=>'<div class="card"><b>'+a[0]+'</b><p class="muted">'+a[1]+'</p></div>').join("")+'<div class="card"><b>周测</b><p class="muted">一年以上不满三年的合同，试用期不得超过两个月。写成四个月是不符合第19条的。</p></div>');}
+function archive(){const p=S.profile;return shell("一人一档",'<h1>一人一档</h1><p class="muted">不填姓名时，广场上统一显示 momo。</p><input id="nm" placeholder="姓名" value="'+(p.name||"")+'"/><input id="sc" placeholder="学校" value="'+(p.school||"")+'" style="margin-top:8px"/><input id="tg" placeholder="目标岗位" value="'+(p.target||"")+'" style="margin-top:8px"/><button class="btn" id="savep">保存档案</button><div class="card"><b>最近面试</b><p class="muted">'+(S.lastReport||"还没有锁定的评测")+'</p></div>');}
+function community(){const posts=(S.posts||[]).map((p,i)=>'<div class="card"><b>'+p.author+'</b><p>'+p.text+'</p><button class="ghost btn" data-like="'+i+'">赞 '+p.likes+'</button></div>').join("");
+return shell("职场社群",'<h1>职场社群</h1><p class="muted">帖子存在这台浏览器里。GitHub Pages 没有服务器，不能和别人实时同步。</p><textarea id="post" rows="3" placeholder="写一条和求职或劳动法有关的帖子"></textarea><button class="btn" id="pub">发布</button>'+HOT.map(h=>'<div class="card"><b>'+h[0]+'</b><p class="muted">'+h[1]+'</p></div>').join("")+posts);}
+function abroad(){return shell("域外对照",'<h1>域外对照</h1>'+ABROAD.map(a=>'<div class="card"><b class="en">'+a[0]+'</b><p class="muted">'+a[1]+'</p></div>').join(""));}
+function draw(){const view={home,interview,legal,archive,community,abroad}[S.tab]();document.getElementById("app").innerHTML=view;
+const enter=document.getElementById("enter");if(enter)enter.onclick=()=>{S.entered=true;save();draw();};
+document.querySelectorAll("[data-tab]").forEach(b=>b.onclick=()=>{S.tab=b.dataset.tab;if(S.tab==="interview"){S.phase="pick";S.stage=0;S.msgs=[];}save();draw();});
+document.querySelectorAll("[data-track]").forEach(b=>b.onclick=()=>{S.track=b.dataset.track;save();draw();});
+document.querySelectorAll("[data-role]").forEach(b=>b.onclick=()=>{S.role=b.dataset.role;S.tab="interview";S.phase="pick";save();draw();});
+const begin=document.getElementById("begin");if(begin)begin.onclick=()=>{S.phase="chat";S.stage=0;S.miss=0;S.msgs=[["bot",line()]];save();draw();};
+const send=document.getElementById("send");if(send)send.onclick=()=>{const t=document.getElementById("draft").value.trim();if(!t)return;S.msgs.push(["user",t]);const bad=thin(t);if(bad){S.strikes++;S.miss++;}if(S.stage>=5)S.msgs.push(["bot","今天的面试到此结束。"]);
+else if(bad&&S.miss<2)S.msgs.push(["bot","我先停一下。刚才这句没有进入当前环节。请重新说：先给结论，再补一件具体的事。"]);
+else{S.stage=Math.min(5,S.stage+1);S.miss=0;S.msgs.push(["bot",line()]);}save();draw();};
+const lock=document.getElementById("lock");if(lock)lock.onclick=()=>{const n=S.msgs.filter(m=>m[0]==="user").map(m=>m[1]).join("").length;const score=Math.max(48,Math.min(86,52+Math.floor(n/40)-S.strikes*8));S.lastReport="最近一场均分 "+score+"。已写入本机档案。";S.phase="pick";S.tab="archive";save();draw();};
+const savep=document.getElementById("savep");if(savep)savep.onclick=()=>{S.profile={name:document.getElementById("nm").value,school:document.getElementById("sc").value,target:document.getElementById("tg").value};save();};
+const pub=document.getElementById("pub");if(pub)pub.onclick=()=>{const t=document.getElementById("post").value.trim();if(t.length<8)return;S.posts.unshift({author:nameOf(),text:t,likes:0});save();draw();};
+document.querySelectorAll("[data-like]").forEach(b=>b.onclick=()=>{S.posts[+b.dataset.like].likes++;save();draw();});}
+draw();
 </script>
 </body>
 </html>
