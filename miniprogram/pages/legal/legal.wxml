@@ -1,0 +1,31 @@
+<view class="pad" wx:if="{{sources}}">
+  <view class="en" bindtap="closeSources">返回</view>
+  <view class="h1">资料出处</view>
+  <view class="muted">外链只放在这一页。广场热搜只显示标题，不会从那里跳走。</view>
+  <view class="card" wx:for="{{links}}" wx:key="href" data-url="{{item.href}}" bindtap="open">
+    <view>{{item.label}}</view>
+    <view class="muted">{{item.note}}</view>
+  </view>
+</view>
+<view class="pad" wx:else>
+  <view class="en">STATUTES</view>
+  <view class="card" wx:for="{{laws}}" wx:key="title">
+    <view>{{item.title}}</view>
+    <view class="muted">{{item.point}}</view>
+  </view>
+  <view class="h1">提问</view>
+  <textarea value="{{question}}" bindinput="onQ" placeholder="可以贴合同句子，或描述招聘里的要求" />
+  <button class="btn" bindtap="ask">向法律助手提问</button>
+  <button class="btn ghost" bindtap="choose">上传 PDF / Word / WPS</button>
+  <view class="muted" wx:if="{{fileName}}">已选择 {{fileName}}。小程序内不解析正文，请把关键句贴到上面。</view>
+  <view class="card" wx:if="{{answer}}">{{answer}}</view>
+  <view class="h1">测验</view>
+  <view class="card">
+    <view>一年期合同，试用期写成四个月，对吗？</view>
+    <button class="btn" bindtap="quiz" data-ok="1">不对，不得超过两个月</button>
+    <button class="btn ghost" bindtap="quiz" data-ok="0">双方签字就有效</button>
+    <view class="muted" wx:if="{{quizNote}}">{{quizNote}}</view>
+  </view>
+  <view class="muted" style="margin-top:40rpx;" bindtap="openSources">出处</view>
+</view>
+<nav current="legal" />

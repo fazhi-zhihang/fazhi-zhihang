@@ -1,0 +1,41 @@
+<view class="pad">
+  <block wx:if="{{phase == 'pick'}}">
+    <view class="en">SELECT ROLE</view>
+    <view class="card" wx:for="{{roles}}" wx:key="id" data-id="{{item.id}}" data-opening="{{item.opening}}" data-title="{{item.title}}" bindtap="pick">
+      <view class="row">
+        <image src="{{item.photo}}" style="width:72rpx;height:72rpx;border-radius:12rpx;" mode="aspectFill" />
+        <view class="grow">
+          <text>{{item.title}}</text>
+          <view class="en">{{item.en}}</view>
+          <view class="muted">{{item.brief}}</view>
+        </view>
+      </view>
+    </view>
+    <input placeholder="自选岗位名称" value="{{customTitle}}" bindinput="onCustom" />
+    <view class="muted">开场是自我介绍。之后动机、一道专业题、一个事例、你的反问，然后结束。</view>
+    <view class="card">
+      <view>视频面试</view>
+      <view class="muted">开发中，敬请期待</view>
+      <block wx:if="{{devOn}}">
+        <input placeholder="https:// 视频面试接口" value="{{videoEndpoint}}" bindinput="onVideoEndpoint" />
+        <input password placeholder="视频面试 API Key" value="{{videoApiKey}}" bindinput="onVideoKey" />
+      </block>
+    </view>
+    <button class="btn" bindtap="startCustom">用自选岗位开始</button>
+  </block>
+  <block wx:if="{{phase == 'chat'}}">
+    <view class="en">{{title}} · {{stageLabel}}</view>
+    <view wx:for="{{messages}}" wx:key="index" class="card" style="{{item.role == 'user' ? 'background:#1d5fbf;color:#f5f9ff;' : ''}}">{{item.content}}</view>
+    <textarea value="{{draft}}" bindinput="onDraft" placeholder="结论、依据、下一步" />
+    <button class="btn" bindtap="send" loading="{{thinking}}">发送</button>
+    <button class="btn ghost" bindtap="finish">{{stage >= 5 ? '结束并锁定评测' : '提前结束并锁定评测'}}</button>
+  </block>
+  <block wx:if="{{phase == 'report'}}">
+    <view class="h1">已生成评测</view>
+    <view class="muted">{{summary}}</view>
+    <view class="card">{{advice}}</view>
+    <view class="en">写入后不可修改</view>
+    <button class="btn" bindtap="lock">写入档案</button>
+  </block>
+</view>
+<nav current="interview" />

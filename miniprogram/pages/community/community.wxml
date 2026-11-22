@@ -1,0 +1,171 @@
+<view class="pad" wx:if="{{!ready}}">
+  <view class="en">IDENTITY</view>
+  <view class="h1">以什么身份进广场</view>
+  <view class="muted">没有机器人代聊。帖子、评论和赞都是你自己的。</view>
+  <view class="card" data-mode="real" bindtap="setMode">用本名 {{mode == 'real' ? '· 已选' : ''}}</view>
+  <view class="card" data-mode="alias" bindtap="setMode">另一个身份 {{mode == 'alias' ? '· 已选' : ''}}</view>
+  <view class="card" data-mode="anon" bindtap="setMode">匿名 {{mode == 'anon' ? '· 已选' : ''}}</view>
+  <input wx:if="{{mode == 'alias'}}" placeholder="这个身份怎么称呼" value="{{alias}}" bindinput="onAlias" />
+  <button class="btn" bindtap="confirm">进入广场</button>
+</view>
+<block wx:else>
+  <view class="pad" wx:if="{{level == 'hub'}}">
+    <view class="row" style="justify-content:space-between;">
+      <view class="en">Plaza</view>
+      <view class="en" bindtap="edit">{{name}} · 更改</view>
+    </view>
+    <view class="h1">广场</view>
+    <view class="muted">帖子、热搜、专栏、视频分开。点进去先选法律争议，第三页才是内容。</view>
+    <view class="card" data-section="post" bindtap="openSection">
+      <view>帖子</view><view class="en">Posts</view>
+      <view class="muted">按法律争议看大家写的判断</view>
+    </view>
+    <view class="card" data-section="hot" bindtap="openSection">
+      <view>热搜</view><view class="en">Hot</view>
+      <view class="muted">社区高赞，并对照当日榜单标题</view>
+    </view>
+    <view class="card" data-section="column" bindtap="openSection">
+      <view>专栏</view><view class="en">Columns</view>
+      <view class="muted">长文。投稿条件在专区里面</view>
+    </view>
+    <view class="card" data-section="video" bindtap="openSection">
+      <view>视频</view><view class="en">Videos</view>
+      <view class="muted">点开才是这一区的视频</view>
+    </view>
+    <view wx:if="{{devOn}}" class="muted" style="margin-top:28rpx;" bindtap="openReview">审核</view>
+  </view>
+
+  <view class="pad hotbg" wx:if="{{level == 'zones'}}">
+    <view class="en" bindtap="back">返回广场</view>
+    <view class="en">{{sectionEn}}</view>
+    <view class="h1">{{sectionTitle}}</view>
+    <view class="muted">先选法律争议。点开才是你要看的内容，上传也在那一页里。</view>
+    <view class="card" wx:for="{{zones}}" wx:key="id" data-id="{{item.id}}" bindtap="openZone">
+      <view>{{item.title}}</view>
+      <view class="en">{{item.en}}</view>
+      <view class="muted">{{item.blurb}}</view>
+    </view>
+  </view>
+
+  <view class="pad" wx:if="{{level == 'review' && devOn}}">
+    <view class="en" bindtap="back">返回广场</view>
+    <view class="h1">审核</view>
+    <view class="muted">通过后才会公开。隐藏的帖子从专区消失。</view>
+    <view class="h1">专栏</view>
+    <view class="card" wx:for="{{columns}}" wx:key="id">
+      <view>{{item.title}} · {{item.status}}</view>
+      <view class="row">
+        <button class="btn ghost" data-id="{{item.id}}" data-status="live" bindtap="setColumnStatus">通过</button>
+        <button class="btn ghost" data-id="{{item.id}}" data-status="hidden" bindtap="setColumnStatus">隐藏</button>
+      </view>
+    </view>
+    <view class="h1">视频</view>
+    <view class="card" wx:for="{{videos}}" wx:for-item="clip" wx:key="id">
+      <view>{{clip.title}} · {{clip.status}}</view>
+      <view class="row">
+        <button class="btn ghost" data-id="{{clip.id}}" data-status="live" bindtap="setVideoStatus">通过</button>
+        <button class="btn ghost" data-id="{{clip.id}}" data-status="hidden" bindtap="setVideoStatus">隐藏</button>
+      </view>
+    </view>
+    <view class="h1">帖子</view>
+    <view class="card" wx:for="{{posts}}" wx:key="id">
+      <view>{{item.author}} {{item.hidden ? '· 已隐藏' : ''}}</view>
+      <view class="muted">{{item.text}}</view>
+      <button class="btn ghost" data-id="{{item.id}}" data-hidden="{{item.hidden ? '1' : ''}}" bindtap="hidePost">{{item.hidden ? '恢复' : '隐藏'}}</button>
+    </view>
+  </view>
+
+  <view class="pad hotbg" wx:if="{{level == 'detail'}}">
+    <view class="en" bindtap="back">返回{{sectionTitle}}</view>
+    <view class="en">{{zoneEn}}</view>
+    <view class="h1">{{zoneTitle}}</view>
+    <view class="muted">{{zoneNote}}</view>
+
+    <block wx:if="{{section == 'hot'}}">
+      <view class="muted">{{hotNote}} 这里只显示标题，不跳到站外。</view>
+      <view class="h1">社区高赞</view>
+      <view class="muted" wx:if="{{praised.length == 0}}">这一区还没有被赞过的帖子。</view>
+      <view class="card" wx:for="{{praised}}" wx:key="id">
+        <view>{{item.text}} · 社区高赞 · {{item.likes}} 赞</view>
+        <view class="muted">{{item.author}}</view>
+      </view>
+      <view class="h1">今日相关</view>
+      <view class="muted" wx:if="{{hotHits.length == 0}}">今天的微博和百度标题里没有对上这一区。不会编造。</view>
+      <view class="card" wx:for="{{hotHits}}" wx:key="title">
+        <view>{{item.title}} · {{item.source}}</view>
+        <view class="muted">{{item.heat}}</view>
+      </view>
+    </block>
+
+    <block wx:if="{{section == 'post'}}">
+      <input placeholder="在本区搜索" value="{{query}}" bindinput="onQuery" />
+      <view class="row">
+        <button class="btn {{sort == 'new' ? '' : 'ghost'}}" data-sort="new" bindtap="setSort">日期</button>
+        <button class="btn {{sort == 'likes' ? '' : 'ghost'}}" data-sort="likes" bindtap="setSort">赞</button>
+        <button class="btn {{sort == 'views' ? '' : 'ghost'}}" data-sort="views" bindtap="setSort">点击</button>
+      </view>
+      <view class="muted" wx:if="{{visible.length == 0}}">这一区还没有帖子。</view>
+      <view class="card" wx:for="{{visible}}" wx:key="id">
+        <view>{{item.author}}</view>
+        <view>{{item.text}}</view>
+        <view class="row">
+          <button class="btn ghost" data-id="{{item.id}}" bindtap="like">{{item.liked ? '已赞' : '赞'}} {{item.likes}}</button>
+          <button class="btn ghost" data-id="{{item.id}}" bindtap="toggle">评论 {{item.comments.length}}</button>
+          <button class="btn ghost" data-id="{{item.id}}" bindtap="remove">删除</button>
+        </view>
+        <view class="muted">点击 {{item.views || 0}}</view>
+        <block wx:if="{{openId == item.id}}">
+          <view class="muted" wx:for="{{item.comments}}" wx:for-item="cmt" wx:key="id">{{cmt.author}}：{{cmt.text}}</view>
+          <input placeholder="写一条评论" value="{{comment}}" bindinput="onComment" />
+          <button class="btn" data-id="{{item.id}}" bindtap="reply">回复</button>
+        </block>
+      </view>
+      <button class="btn ghost" bindtap="toggleCompose">{{compose ? '收起投稿' : '投稿到本区'}}</button>
+      <block wx:if="{{compose}}">
+        <view class="muted">写在本法律专区。不要只丢一句话。</view>
+        <textarea placeholder="先给结论，再写你看到的事实" value="{{draft}}" bindinput="onDraft" />
+        <button class="btn" bindtap="publish">发布</button>
+      </block>
+    </block>
+
+    <block wx:if="{{section == 'column'}}">
+      <view class="muted" wx:if="{{liveColumns.length == 0}}">这一区还没有通过的专栏。</view>
+      <view class="card" wx:for="{{liveColumns}}" wx:key="id">
+        <view>{{item.title}}</view>
+        <view class="muted">{{item.author}}</view>
+        <view>{{item.body}}</view>
+        <image wx:if="{{item.imagePath}}" src="{{item.imagePath}}" mode="widthFix" style="width:100%;border-radius:12rpx;" />
+      </view>
+      <button class="btn ghost" bindtap="toggleCompose">{{compose ? '收起投稿' : '投稿到本区'}}</button>
+      <block wx:if="{{compose}}">
+        <view class="muted">标题至少 4 个字，正文至少 80 个字。每人最多 6 篇。小程序不能解析 PDF 正文，请自己写判断。未通过不会公开。</view>
+        <input placeholder="专栏标题" value="{{colTitle}}" bindinput="onColTitle" />
+        <textarea placeholder="写下你的判断" value="{{colBody}}" bindinput="onColBody" />
+        <button class="btn ghost" bindtap="pickImage">上传图片</button>
+        <button class="btn ghost" bindtap="pickDoc">选择 PDF / Word / WPS</button>
+        <image wx:if="{{imagePath}}" src="{{imagePath}}" mode="widthFix" style="width:100%;border-radius:12rpx;" />
+        <view class="muted">{{hint}}</view>
+        <button class="btn" bindtap="sendColumn">送审</button>
+      </block>
+    </block>
+
+    <block wx:if="{{section == 'video'}}">
+      <view class="muted" wx:if="{{liveVideos.length == 0}}">这一区还没有通过的视频。</view>
+      <view class="card" wx:for="{{liveVideos}}" wx:key="id">
+        <view>{{item.title}}</view>
+        <view class="muted">{{item.author}} {{item.note}}</view>
+        <video wx:if="{{item.videoPath}}" src="{{item.videoPath}}" controls style="width:100%;" />
+      </view>
+      <button class="btn ghost" bindtap="toggleCompose">{{compose ? '收起上传' : '上传到本区'}}</button>
+      <block wx:if="{{compose}}">
+        <view class="muted">每人最多 4 条，18MB 以内。标题和说明写给哪个岗位看。</view>
+        <input placeholder="视频标题" value="{{vidTitle}}" bindinput="onVidTitle" />
+        <textarea placeholder="说明：岗位、讲了什么" value="{{vidNote}}" bindinput="onVidNote" />
+        <button class="btn ghost" bindtap="pickVideo">选择视频</button>
+        <view class="muted">{{hint}}</view>
+        <button class="btn" bindtap="sendVideo">送审</button>
+      </block>
+    </block>
+  </view>
+</block>
+<nav current="community" />
