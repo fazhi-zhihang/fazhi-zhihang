@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="法智职航">
+  <rect width="32" height="32" rx="6.5" fill="#1A2332"/>
+  <rect x="1.7" y="1.7" width="28.6" height="28.6" rx="5" fill="#F6F1E8"/>
+  <rect x="4.3" y="4.3" width="23.4" height="23.4" rx="1.1" fill="#B42318"/>
+  <!-- 氵 -->
+  <rect x="7.15" y="8.15" width="2.35" height="2.35" rx="0.45" fill="#F6F1E8"/>
+  <rect x="7.15" y="12.15" width="2.55" height="2.25" rx="0.4" fill="#F6F1E8"/>
+  <path fill="#F6F1E8" d="M6.9 16.15h2.7l2.15 6.15h-2.45l-.55-1.7H7.2z"/>
+  <!-- 去 -->
+  <path fill="#F6F1E8" d="M12.15 8.05h11.15v2.25H18.55v3.15h4.55v2.15h-4.55v1.15h4.85v2.15h-2.25v3.55h-2.35v-3.55h-4.4v3.55h-2.25v-5.7h2.25v1.15h4.4V10.3h-6.65z"/>
+</svg>
