@@ -1,0 +1,4 @@
+<image class="mark" src="/assets/mark.png" mode="aspectFit" />
+<view class="nav">
+  <view wx:for="{{items}}" wx:key="id" data-url="{{item.url}}" bindtap="open" class="{{current == item.id ? 'on' : ''}}">{{item.label}}</view>
+</view>

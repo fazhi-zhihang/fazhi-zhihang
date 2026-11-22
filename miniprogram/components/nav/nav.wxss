@@ -1,0 +1,3 @@
+.nav { position: fixed; left: 0; right: 0; bottom: 0; display: flex; overflow-x: auto; white-space: nowrap; background: rgba(248,251,254,.94); border-top: 1rpx solid #c5d7e8; }
+.nav view { flex: 0 0 120rpx; text-align: center; padding: 18rpx 0 28rpx; color: #5c7388; font-size: 22rpx; }
+.on { color: #1d5fbf; }

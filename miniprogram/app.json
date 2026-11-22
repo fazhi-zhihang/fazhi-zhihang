@@ -1,0 +1,19 @@
+{
+  "pages": [
+    "pages/home/home",
+    "pages/interview/interview",
+    "pages/legal/legal",
+    "pages/archive/archive",
+    "pages/community/community",
+    "pages/abroad/abroad",
+    "pages/settings/settings"
+  ],
+  "window": {
+    "navigationBarBackgroundColor": "#e7f3fb",
+    "navigationBarTitleText": "法智职航",
+    "navigationBarTextStyle": "black",
+    "backgroundColor": "#e7f3fb"
+  },
+  "style": "v2",
+  "sitemapLocation": "sitemap.json"
+}
